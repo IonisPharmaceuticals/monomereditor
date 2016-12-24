@@ -1,0 +1,53 @@
+
+<div class="panel panel-primary" style="width:100%;font-size:small;border:NONE" >
+    <div class="panel-heading"> <h3 class="panel-title"> Chemistry details </h3></div>
+
+            <div class="panel panel-helm-gray">
+            <div class="panel-body">
+                <textarea class="form-control" placeholder="Message" style="font-size:small">{{ helm }}</textarea>
+            </div>
+            </div>
+
+            <ul class="nav nav-tabs">
+                <li *ngFor="let chain of oligochemistry?.chains" >
+                    <a data-toggle="tab" href="#{{chain.chain_id}}">
+                        Chain ID: {{chain.chain_id}}</a>
+                </li>
+            </ul>
+      
+            <div class="tab-content" style="width:100%;font-size:small">
+                <div *ngFor="let chain of oligochemistry?.chains" id="{{chain?.chain_id}}" class="tab-pane fade"  >
+                                <div *ngFor="let unit of chain?.units">
+
+                                    <table class="table">
+                                    <tbody>
+                                        <tr width="60%">
+                                            <td style="padding:10" width="150">
+                                                <p>{{unit?.helm}}</p>
+                                            </td>
+                                            <td style="padding:0">
+                                                <img src='data:image/png;base64,{{unit?.png}}' width="200" height="200"/>
+                                            <td style="padding:10">
+
+                                        </tr>
+                                    </tbody>
+                                    </table>
+                                </div>
+                </div>
+            </div>
+</div>
+
+
+
+    <modal #modal>
+        <modal-header [show-close]="true">
+            <h4 class="modal-title"></h4>
+        </modal-header>
+        <modal-body>
+            Generating chemistry
+        </modal-body>
+    </modal>
+          
+          
+
+    

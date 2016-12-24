@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <script type="text/javascript" src="js/d3.min.js"></script>
+    <script src="js/ionis_util.js"></script>
+    <script src="js/ionis_box.js"></script>
+    <script src="js/ionis_tool_tip.js"></script>
+
+
+    <meta charset="UTF-8">
+    <title>Screening Results</title>
+</head>
+
+
+<style>
+
+    .d3-tip {
+        line-height: 1;
+        font-weight: bold;
+        padding: 12px;
+        background: rgba(0, 0, 0, 0.8);
+        color: #fff;
+        border-radius: 2px;
+    }
+
+    /* Creates a small triangle extender for the tooltip */
+    .d3-tip:after {
+        box-sizing: border-box;
+        display: inline;
+        font-size: 10px;
+        width: 100%;
+        line-height: 1;
+        color: rgba(0, 0, 0, 0.8);
+        content: "\25BC";
+        position: absolute;
+        text-align: center;
+    }
+
+    /* Style northward tooltips differently */
+    .d3-tip.n:after {
+        margin: -1px 0 0 0;
+        top: 100%;
+        left: 0;
+    }
+    .axis path {
+        display: none;
+    }
+
+    /*.axis line {*/
+    /*shape-rendering: crispEdges;*/
+    /*stroke: #000;*/
+    /*}*/
+
+    .box {
+        font: 8px sans-serif;
+    }
+
+    .box text {
+
+    }
+
+    .box line,
+    .box rect,
+    .box circle {
+        fill: #fff;
+        stroke: #04a2ff;
+        stroke-width: 1px;
+    }
+
+    .box .center {
+        stroke-dasharray: 3, 3;
+    }
+
+    .box .outlier {
+        fill: none;
+        stroke: #ccc;
+    }
+
+</style>
+
+<body>
+
+<div class="container theme-showcase" role="main">
+<div class="jumbotron">
+        <h3>Screening Analysis</h3>
+</div>
+</div>
+
+
+<script>
+    var plate_labels = [];
+    var query = window.location.search;
+    if (query) {
+        var qp = getParameterByName("plates", query);
+        if (qp.indexOf(",") > 0) {
+            var wp = qp.split(",");
+            wp.forEach(function (x, i) {
+                sp = x.split(' ');
+                plate_labels.push(sp[0]);
+            });
+        }
+    }
+    plate_labels.forEach(function (x, i) {
+        console.log(x);
+    });
+    width = window.innerWidth || document.body.clientWidth;
+    var margin = {top: 10, right: 50, bottom: 150, left: 50},
+            width = width - margin.left - margin.right,
+            height = 500 - margin.top - margin.bottom;
+    var max = 140;
+    var min = 0;
+    var plates = wp;
+    d3.json("http://lin107:8080/rts/v1/exp/calculate" + query, function (error, json) {
+//        d3.json("http://lin107:8080/rts/v1/exp/calculate" + query, function (error, json) {
+//        d3.csv("data/example.csv", function(error, csv) {
+        if (error) throw error;
+
+        var data = [];
+        // dict defines the samples that will be plotted.
+        var dict = [];
+        var x_axis = [];
+        json.forEach(function (x, i) {
+            if (x.treatment_id != "STD" && (!Number.isNaN(Number(x.percent_control)) > 0 ) && Number(x.percent_control) > 0.0000002) {// &&
+//                    x.treatment_id == 'ISIS00892912') {
+                if (x_axis.indexOf(x.treatment_id) < 0) {
+                    x_axis.push(x.treatment_id);
+                }
+                if (x.treatment_id in dict) {
+                    dict[x.treatment_id].push(x.percent_control);
+                } else {
+                    dict[x.treatment_id] = [];
+                    dict[x.treatment_id].push(x.percent_control);
+                }
+            }
+        });
+        var tip = d3.tip()
+                .attr('class', 'd3-tip')
+                .offset([-10, 0])
+                .html(function(d, v) {
+                    return "  " + d + ":  [" + v +"] ";
+                })
+        var data = [];
+        x_axis.forEach(function (x, i) {
+            data[i] = [];
+            data[i][0] = x;
+            data[i][1] = [];
+            data[i][1] = dict[x];
+        });
+        width = x_axis.length * 10;
+        var chart = d3.box()
+                .whiskers(iqr(1.5))
+                .height(height)
+                .domain([min, max]).showLabels(false);
+        var svg = d3.select("body").append("svg")
+                .attr("width", width + margin.left + margin.right)
+                .attr("height", height + margin.top + margin.bottom)
+                .attr("class", "box")
+                .append("g")
+                .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+        svg.call(tip);
+
+
+        var decreasing_median = false;
+        var x0 = d3.scale.ordinal().domain(data.sort(decreasing_median
+                        ? function (a, b) {
+                    return median(b[1]) - median(a[1]);
+                }
+                        : function (a, b) {
+                    return d3.ascending(median(a[1]), median(b[1]));
+                })
+                .map(function (d) {
+                    return d[0];
+                }))
+                .rangeRoundBands([0, width], 0.8, 0.2);
+
+        var x = d3.scale.ordinal()
+                .domain(data.map(function (d) {
+                    return d[0];
+                }))
+                .rangeRoundBands([0, width], 0.8, 0.2);
+        var xAxis = d3.svg.axis()
+                .scale(x0)
+                .orient("bottom");
+
+
+        // the y-axis
+        var y = d3.scale.linear()
+                .domain([min, max])
+                .range([height + margin.top, 0 + margin.top]);
+
+        var yAxis = d3.svg.axis()
+                .scale(y)
+                .orient("left");
+
+        svg.selectAll(".box")
+                .data(data)
+                .enter().append("g")
+                .on("mouseover", function(x){
+                    //d3.select(this).transition().duration(300)
+                    tip.show(x[0], concat(x[1]) );
+                })
+                .on("mouseout", function(){
+//                    d3.select(this).transition().duration(300)
+//                            .style("background-color", "#333");
+                    tip.hide();
+                })
+                .attr("transform", function (d, i) {
+                    return "translate(" + x(d[0]) + "," + margin.top + ")";
+                })
+                .call(chart.width(x.rangeBand()));
+
+        // add a title
+        svg.append("text")
+                .attr("x", (width / 2))
+                .attr("y", 0 + (margin.top / 2))
+                .attr("text-anchor", "middle")
+                .style("font-size", "18px")
+                .text("Percent Control");
+
+        // draw y axis
+        svg.append("g")
+                .attr("class", "y axis")
+                .call(yAxis)
+                .append("text") // and text1
+                .attr("transform", "rotate(-90)")
+                .attr("y", 6)
+                .attr("dy", ".21em")
+                .style("text-anchor", "end")
+                .style("font-size", "16px")
+                .text("");
+        var padding = 5;
+        // draw x axis with labels and move to the bottom of the chart area
+        svg.append("g")
+                .attr("class", "x axis")  // two classes, one for css formatting, one for selection below
+                .attr("transform", "translate(0," + (height - padding) + ")")
+                .call(xAxis);
+
+        svg.selectAll(".x text")
+                .attr("transform", function (d) {
+                    return "translate(" + this.getBBox().height * -2 + "," + (this.getBBox().height + 10) + ")rotate(-45)";
+                });
+
+
+//        svg.append('div')
+//                .html('...')
+//                .style('width', '10px')
+//                .style('opacity', 0)
+//                .on("mouseover", function(){
+//                    d3.select(this).transition().duration(300)
+//                            .style("background-color", "#FFD700");
+//                })
+//                .on("mouseout", function(){
+//                    d3.select(this).transition().duration(300)
+//                            .style("background-color", "#333");
+//                })
+//                .transition()
+//                .delay(function(d, i) { return i * 300 })
+//                .duration(300)
+//                .style('width', function(d) { return (d * 150) + 'px'; })
+//                .style('opacity', 1)
+//                .text(function(d) { return d + ' miles'; });
+
+
+        // not implemented ==> d3.select("input").on("change", change);
+//        function change() {
+//            console.log(" change ");
+//                    svg.select("g .x.axis")
+//                    .transition().duration(1500).ease("sin-in-out")  // https://github.com/mbostock/d3/wiki/Transitions#wiki-d3_ease
+//                    .attr("transform", "translate(0," + (height - padding) + ")")
+//            svg.selectAll("g")
+//                    .sort(function (a, b) {
+//                        if (a.size > 1)
+//                        return x0(a) - x0(b);
+//
+//                        return 0;
+//                    })
+//                    .call(chart.width(x.rangeBand()));
+        // svg.call(chart.width(x.rangeBand()));
+
+////            console.log(" median : ");
+//
+//            var transition = svg.transition().duration(750),
+//                    delay = function(d, i) { return i * 50; };
+//
+//            transition.selectAll(".bar")
+//                    .delay(delay)
+//                    .attr("x", function(d) { return x0(d.letter); });
+//
+//            transition.select(".x.axis")
+//                    .call(xAxis)
+//                    .selectAll("g")
+//                    .delay(delay);
+//        }
+    });
+
+
+    function iqr(k) {
+        return function (d, i) {
+            var q1 = d.quartiles[0],
+                    q3 = d.quartiles[2],
+                    iqr = (q3 - q1) * k,
+                    i = -1,
+                    j = d.length;
+            while (d[++i] < q1 - iqr);
+            while (d[--j] > q3 + iqr);
+            return [i, j];
+        };
+    }
+
+
+</script>
+
+
+</body>
+</html>

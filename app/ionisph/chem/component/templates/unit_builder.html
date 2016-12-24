@@ -1,0 +1,27 @@
+<div class='panel panel-heading'>
+    <!--<div class="panel panel-danger">-->
+    <div class="table-responsive" style="font-size: small">
+        <div class="table">
+            <tbody style="padding-left: 5px">
+            <tr class="default">
+                <td style="width: 700px; height: 500px; padding: 5px; border: NONE">
+                    <ketcher-2 [monomer_manager]="monomer_manager"
+                             (structure)="structureUpdate($event)"  (substructureof)="showSubstructureHits($event)" [app_control]="appman"></ketcher-2>
+                </td>
+                <td *ngIf="monomer_db" style="width: 315px; height: 500px; overflow: hidden">
+                        <new-monomer [monomer_db]="monomer_db" [monomer_manager]="monomer_manager"
+                                     monomer_type="any" [app_control]="appman"></new-monomer>
+                </td>
+            </tr>
+            <!--<tr class="active" style="padding: 0px">-->
+            <!--<td *ngIf="monomer_db">-->
+            <!--</td>-->
+            <!--</tr>-->
+            </tbody>
+        </div>
+    </div>
+    <!--</div>-->
+    <!--<register-monomer-editor [monomer_db]="monomer_db" [monomer_manager]="monomer_manager" [app_control]="appman"></register-monomer-editor>-->
+    <monomer2-lib></monomer2-lib>
+
+</div>

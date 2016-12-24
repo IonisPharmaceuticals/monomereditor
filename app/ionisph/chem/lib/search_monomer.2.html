@@ -1,0 +1,24 @@
+<div class='panel panel-heading'>
+    <!--<div class="panel panel-danger">-->
+    <div class="table-responsive" style="font-size: small">
+        <div class="table">
+            <tbody style="padding-left: 5px">
+            <tr class="default">
+                <td style="width: 650px; padding: 5px">
+                                     <ketcher-2 [monomer_manager]="monomer_manager"
+                                               (structure)="structureUpdate($event)"  (substructureof)="showSubstructureHits($event)" [app_control]="appman"></ketcher-2>
+                                    <monomer-editor *ngIf="enable_editing" [monomer_db]="monomer_db" [monomer_manager]="monomer_manager" [app_control]="appman"></monomer-editor>
+                </td>
+                <td *ngIf="monomer_db" style="width: 315px">
+                    <div class="btn-toolbar" role="toolbar" aria-label="...">
+                        <div class="btn-group" role="group" aria-label="...">
+                                <button type="button" class="btn btn-default" (click)="refreshList()">Refresh list</button>
+                        </div>
+                    </div>
+                    <monomer-list [monomer_db]="monomer_db" [monomer_manager]="monomer_manager" [app_control]="appman"></monomer-list>
+                </td>
+            </tr>
+            </tbody>
+        </div>
+    </div>
+</div>

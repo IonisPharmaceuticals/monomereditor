@@ -1,0 +1,58 @@
+
+
+<hr>
+
+<div id="main" style="height:300px;width:100%" >
+
+      <uri-result-table [data]="data" [fields]="['id','helm_function', 'description', 'author']" 
+      [headers]="['ID','Function', 'Description', 'Author']" [field_widths]="[100,500,500,200]"
+      [notify_selection_on_field] = 'id'
+      [table_manager] = "table_manager"
+      (selected)="set_selected (selected)" >
+      </uri-result-table>
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<modal #modal item-width="'400px'">
+      <modal-header [show-close]="true">
+      <h4 class="modal-title"> HELM Rule </h4>
+      </modal-header>
+      <modal-body>
+         
+            <div class="form-group">
+                    <label for="author">Author</label>
+                    <input type="text" class="form-control" required [(ngModel)]="function_author" name="author" id="author">
+            </div>
+            <div class="form-group">
+                    <label for="lastName">Function Name</label>
+                    <input type="text" class="form-control" required [(ngModel)]="function_name" name="function_name" id="function_name">
+            </div>
+            <div class="form-group">
+                    <label for="function">Description   </label>
+                  <textarea class="form-control" required id="description_text" rows="3" [(ngModel)]="function_description" ></textarea>
+            </div>
+
+            <div class="form-group">
+                    <label for="function">function (helm, callback)   </label>
+                  <textarea class="form-control" id="function_text" rows="10" [(ngModel)]="function_text" ></textarea>
+                    <label for="fe3unction"></label>
+            </div>
+            <a (click)="apply_function()" class="btn btn-default"><span class="glyphicon glyphicon-ok"></span> Apply </a>
+      </modal-body>
+</modal>
+      
+      
+
+

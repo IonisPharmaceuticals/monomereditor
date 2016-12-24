@@ -1,0 +1,32 @@
+<ul class="nav nav-tabs">
+  <li class="active"><a data-toggle="tab" href="#helm_notation">Notation</a></li>
+  <li><a data-toggle="tab" href="#main">HELM</a></li>
+  <li><a data-toggle="tab" href="#sequence">Base Sequence</a></li>
+  <li><a data-toggle="tab" href="#back_bone_sequence">Backbone Sequence</a></li>
+  <li><a data-toggle="tab" href="#chemistry">Chemical Properties</a></li>
+</ul>
+
+<div class="tab-content" style="height:300px;width:100%;font-size:small">
+      <div id="helm_notation" class="tab-pane fade in active" style="height:300px;width:100%">
+            <helm-notation-grid [data]="data" ></helm-notation-grid>
+      </div>
+      <div id="main" style="height:300px;width:100%" class="tab-pane fade">
+            <raw-grid [data]="data" [fields]="['isisno','helm']" 
+            [headers]="['ION','HELM']" [field_widths]="[100,1000]"
+            [grid_manager]='grid_manager'
+            [notify_selection_on_field]="'helm'"
+            (selected)="set_selected (selected)"></raw-grid>
+      </div>
+  <div id="sequence" class="tab-pane fade" style="height:300px;width:100%">
+        <sequence-grid [data]="data" ></sequence-grid>
+  </div>
+  <div id="back_bone_sequence" class="tab-pane fade" style="height:300px;width:100%">
+        <sequence-grid [data]="data" [sequence_type]="'backbone'" ></sequence-grid>
+  </div>
+  <div id="chemistry" class="tab-pane fade" style="height:300px;width:100%">
+        <raw-grid [data]="data" [fields]="['isisno','formula','mw','desc.legacy_chemical_notation']" 
+        [headers]="['ION','Formula','Molecular Weight', 'Chemistry']"
+        [field_widths]="[100,250,100,600]"></raw-grid>
+  </div>
+</div>
+      

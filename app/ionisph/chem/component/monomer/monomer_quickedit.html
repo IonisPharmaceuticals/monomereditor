@@ -1,0 +1,72 @@
+
+
+  <div *ngIf="monomer" class='panel panel-heading' style="color: darkblue; padding: 2px;">
+                        <form class="form-inline" role="form">
+                              <div class="form-group form-group-sm">
+                                        <label for="m_id">HELM ID</label>
+                                        <input #mid [(ngModel)]="monomer.monomer.alternateId" name="monomer_alternateid" class="form-control" id="m_id" type="text">
+                                        <label for="m_name"> Name </label>
+                                        <input #mid [(ngModel)]="monomer.monomer.name" name="monomer_name" class="form-control" id="m_name" type="text" style="width=300px">
+                                        <hr>
+                                        
+                                        <p>
+                                        <b> HELM Monomer ID </b> What kind of monomer is this?                                        
+                                        </p>
+                                        <br>
+                                        <label class="radio-inline"><input type="radio" name="optradio" [checked]="is_monomer_type('Backbone')" (click)="set_monomer_type('Backbone')">Backbone (e.g. sugar, linker)</label>
+                                        <label class="radio-inline"><input type="radio" name="optradio" [checked]="is_monomer_type('Branch')" (click)="set_monomer_type('Branch')" > Branch (e.g. base)</label>
+                                        <label class="radio-inline"><input type="radio" name="optradio" [checked]="is_monomer_type('Undefined')" (click)="set_monomer_type('Undefined')" > Undefined (e.g. CHEM polymers, endcaps)</label>
+                                        <p>
+                                        Polymer Type
+                                        </p>
+                                        <br>
+                                        <label class="radio-inline"><input type="radio" name="POLYradio"  [checked]="is_polymer_type('RNA')" (click)="set_polymer_type('RNA')">RNA (e.g. sugar, linker)</label>
+                                        <label class="radio-inline"><input type="radio" name="POLYradio"  [checked]="is_polymer_type('CHEM')"  (click)="set_polymer_type('CHEM')" > CHEM (e.g. endcap, other chemical conjugates)</label>
+
+                                        <hr>
+                                        
+                                        <label for="m_natural_analog"> Natural Analog </label>
+                                        
+                                        <input #mid [(ngModel)]="monomer.monomer.naturalAnalog" name="monomer_natural_analog" class="form-control" id="m_natural_analog" type="text">
+                                        <hr>
+                                        
+                                        <label for="focusedInput">Public status</label>
+                                        <input #mid [(ngModel)]="monomer.ispublic" name="is_public" class="form-control" id="focusedInput" type="text">
+                                        <br>
+                                        
+                                        
+                                        
+                                        
+                                         Default Attachment Groups:
+
+                                        <ul>
+                                        <li *ngFor="let attachment of monomer?.monomer?.attachmentList; let i = index" >
+                                            
+                                            <img src="app/img/delete.png" (click)='remove(i)'/> <label for="het_id">{{attachment.label}} </label>
+                                            <input #mid [(ngModel)]="attachment.label" class="form-control" name="attachment_id_1" id="attachement_point_id1" type="text">
+                                        </li>
+                                        </ul>
+                                        <label for="primary_citation_label">Primary Citation</label>
+                                        <br>
+                                        <textarea #mid class="form-control" name="citation_text" rows="5"  cols="100" [(ngModel)]="monomer.monomer.primary_citation" type="textarea">
+                                        </textarea>
+
+                              </div>
+                        </form>
+                        <button type="button" (click)="saveSelectedMonomer(modal)" class="btn btn-secondary">Save</button>
+
+
+
+
+    <modal #modal>
+        <modal-header [show-close]="true">
+            <h4 class="modal-title"></h4>
+        </modal-header>
+        <modal-body>
+            Saved.
+        </modal-body>
+    </modal>
+
+
+</div>
+

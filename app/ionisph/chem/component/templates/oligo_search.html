@@ -1,0 +1,53 @@
+    <div style="padding-top:10px"> 
+        
+                <form class="form-horizontal" role="form">
+                    <div  class="form-group" style="width:100%">
+                        <span class="col-sm-10">
+                        <table class="table">
+                        <tbody>
+                            <tr width="60%">
+                            <td style="padding:10">
+
+                                    <div class="input-group input-group-lg global-search ng-scope" data-step="1" data-intro="">
+                                        <span class="input-group-btn ">
+                                            <button type="button" class="btn btn-lg btn-primary dropdown-toggle" data-toggle="dropdown">
+                                                {{mode}} <span class="caret"></span></button>
+
+                                                    <ul class="dropdown-menu">
+                                                    <li>
+                                                        <button type="button" class="btn btn-link" (click)="setMode('Ions')">Ions </button>
+                                                    </li>
+                                                    <li>
+                                                        <button type="button" class="btn btn-link" (click)="setMode('Sequence')">Sequence </button>
+                                                    </li>
+                                                    <li class="divider"></li>
+                                                    <li>               
+                                                        <button type="button" class="btn btn-link" (click)="setMode('Chemistry')"> Chemistry </button>
+                                                    </li>
+                                                    <li>               
+                                                        <button type="button" class="btn btn-link" (click)="setMode('HELM')"> HELM </button>
+                                                    </li>
+                                                    </ul>
+
+                                        </span>
+                                        <textarea rows="1" wrap="soft" class="form-control input-lg ng-pristine ng-untouched ng-valid ng-isolate-scope multi-paste" isis-multi-paste="" [placeholder]="search_description" [(ngModel)]="search_text" 
+                                         (keyup.enter)="onSubmit($event)" 
+                                        name="search_text"></textarea>
+                                        <span class="input-group-btn">
+                                            <button class="btn btn-default btn-lg" type="button" (click)="onSubmit($event)">Search</button>
+                                        </span>
+                                    </div>
+                            </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                            
+                        </span>
+                    </div>
+                </form> 
+
+</div>
+<helm-grid [uri_ref]="results_uri" [grid_manager]="gridManager" (selected)="set_selected(seobject)"></helm-grid>
+<hr>
+<oligo-chemistry *ngIf='helm' [monomer_db]='monomer_db' [helm]='helm'></oligo-chemistry>
+
