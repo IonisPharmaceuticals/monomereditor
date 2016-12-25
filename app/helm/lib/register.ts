@@ -30,12 +30,6 @@ export class Register  {
          .then(response => this.register_in_oligo_library ( response, oligo ));
     }
   register_in_oligo_library ( res, oligo:HELMStructure ) : void {
-<<<<<<< HEAD
-
-
-
-=======
->>>>>>> 010b343396e564df1738fbaf09d6bac3ff26549c
         var jsy = {
             "isisno": ""+res.id,
             "helm": oligo.helm,
