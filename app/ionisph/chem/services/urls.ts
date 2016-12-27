@@ -25,6 +25,20 @@ export class URLs {
     public static search_by_canonical_smiles : string = URLs.host + '/monomer_library/search_by_canonical_smiles';
 
 
+
+
+	// old deprecated variables for transpilation purposes 
+	public static molfile_merge = '';
+	public static monomer_lib_download_public_monomers_url = '';
+	public static monomer_registration_legacy = '';
+	public static monomer_chemistry_info = '';
+	public static oligo_registration_legacy = '';
+	public static oligo_registration = '';
+	public static oligo_list_url= '';
+	public static helm_rules_datasource = '';
+
+
+
     static build_oligo_list_url ( val:string ) : string {
         return URLs.oligo_list_url + "/?isisno=" + val;
     }
